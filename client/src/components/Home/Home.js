@@ -3,28 +3,28 @@ import { Container, Grow, Grid, Paper, AppBar, TextField, Button } from '@materi
 import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input';
-import { getPosts, getPostsBySearch } from '../../actions/posts';
+import { getPostsBySearch } from '../../actions/posts';
 
 import Pagination from '../Pagination';
 import Posts from '../Posts/Posts';
 import Form from '../Form/Form';
-
 import useStyles from './styles';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
-
 const Home = () => {
-    const [currentId, setCurrentId ] = useState(null);
-    const dispatch = useDispatch();
+    const classes = useStyles();
     const query = useQuery();
-    const history = useHistory();
     const page = query.get('page') || 1;
     const searchQuery = query.get('searchQuery');
-    const classes = useStyles();
+
+    const [currentId, setCurrentId ] = useState(null);
+    const dispatch = useDispatch();
+    
     const [search, setSearch] = useState('');
     const [tags, setTags] = useState([]);
+    const history = useHistory();
 
     const searchPost = () => {
         if(search.trim() || tags) {
@@ -58,7 +58,7 @@ const Home = () => {
                           name='search'
                           variant='outlined'
                           label='Search Memories'
-                          onKeyPress={handleKeyPress}
+                          onKeyDown={handleKeyPress}
                           fullWidth
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
@@ -66,17 +66,19 @@ const Home = () => {
                         <ChipInput
                           style={{ margin: '10px 0'}}
                           value={tags}
-                          onAdd={handleAdd}
-                          onDelete={handleDelete}
+                          onAdd={(tag) => handleAdd(tag)}
+                          onDelete={(tag) => handleDelete(tag)}
                           label="Search Tags"
                           variant='outlined'
                         />
                         <Button onClick={searchPost} className={classes.searchButton} color="primary" variant="contained">Search</Button>
                     </AppBar>
                     <Form currentId={currentId} setCurrentId={setCurrentId} />
-                    <Paper elevation={6}>
-                        <Pagination page={page} />
-                    </Paper>
+                    {(!searchQuery && !tags.length) && (
+                        <Paper className={classes.pagination} elevation={6}>
+                            <Pagination page={page} />
+                        </Paper>
+                        )}
                 </Grid>
             </Grid>
         </Container>
