@@ -25,6 +25,6 @@ mongoose.connect(process.env.CONNECTION_URL, { useNewUrlParser: true, useUnified
     .then(() => app.listen(PORT, () => console.log(`Server running on port: ${PORT}`)))
     .catch((err) => console.log(err.message));
 
-app.get('/posts', (req, res) => {
+app.get('/', (req, res) => {
     res.json("Hello");
 })
